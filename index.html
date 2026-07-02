@@ -5,96 +5,89 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
 <title>心理学クイズ道場｜看護学生のための復習アプリ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div class="app">
 
-  <!-- ===== ヘッダー ===== -->
-  <header class="topbar">
-    <div class="topbar-inner">
-      <button id="btnHome" class="brand" aria-label="ホームに戻る">
-        <span class="brand-mark">🧠</span>
-        <span class="brand-text">心理学クイズ道場</span>
-      </button>
-      <div class="topbar-stats">
-        <div class="stat-chip">
-          <span class="stat-chip-label">正答率</span>
-          <span class="stat-chip-value" id="headerAccuracy">--%</span>
-        </div>
-        <div class="stat-chip">
-          <span class="stat-chip-label">解答済</span>
-          <span class="stat-chip-value" id="headerAnswered">0/85</span>
-        </div>
-      </div>
-    </div>
-  </header>
-
   <main class="main">
 
     <!-- ===== ホーム画面 ===== -->
     <section id="screenHome" class="screen">
-      <div class="hero">
-        <h1 class="hero-title">今日も一問、積み上げよう。</h1>
-        <p class="hero-sub">全85問。ランダム出題で、実力をムラなく鍛える。</p>
+
+      <div class="hero-banner">
+        <h1 class="hero-banner-title">心理学クイズ道場</h1>
+        <p class="hero-banner-sub">全85問・ランダム出題・解説つき</p>
       </div>
 
-      <div class="progress-card">
-        <div class="progress-card-top">
-          <span>全体の進捗</span>
-          <span id="progressText">0 / 85 問</span>
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-box-num" id="statAnswered">0</div>
+          <div class="stat-box-label">取り組み済み</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-num" id="statCorrect">0</div>
+          <div class="stat-box-label">正解数</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-box-num" id="statAccuracy">—</div>
+          <div class="stat-box-label">正答率</div>
+        </div>
+      </div>
+
+      <div class="progress-box">
+        <div class="progress-box-top">
+          <span>全問進捗</span>
+          <span id="progressText">0 / 85問</span>
         </div>
         <div class="progress-bar-track">
           <div class="progress-bar-fill" id="progressBarFill"></div>
         </div>
-        <div class="progress-summary">
-          <div class="summary-item">
-            <div class="summary-num" id="summaryCorrect">0</div>
-            <div class="summary-label">正解</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-num" id="summaryWrong">0</div>
-            <div class="summary-label">不正解</div>
-          </div>
-          <div class="summary-item">
-            <div class="summary-num" id="summaryBookmark">0</div>
-            <div class="summary-label">ブックマーク</div>
-          </div>
-        </div>
       </div>
 
-      <div class="mode-grid">
-        <button class="mode-card mode-card-primary" id="btnStartAll">
-          <div class="mode-card-icon">🎲</div>
-          <div class="mode-card-title">ランダム出題</div>
-          <div class="mode-card-desc">全85問からシャッフルして出題</div>
+      <button class="bookmark-banner" id="btnStartBookmark">
+        <span class="bookmark-banner-star">⭐</span>
+        <span class="bookmark-banner-text">保存した問題</span>
+        <span class="bookmark-banner-count" id="bookmarkCountText">0問</span>
+      </button>
+
+      <h2 class="section-heading">問題セットを選ぶ</h2>
+      <div class="set-select-list">
+        <button class="set-select-item is-selected" id="btnSetAll" data-set="all">
+          <div class="set-select-icon">🎲</div>
+          <div class="set-select-body">
+            <div class="set-select-title">ランダム出題</div>
+            <div class="set-select-desc">全85問からまんべんなく出題</div>
+          </div>
         </button>
-        <button class="mode-card" id="btnStartBookmark">
-          <div class="mode-card-icon">🔖</div>
-          <div class="mode-card-title">ブックマーク復習</div>
-          <div class="mode-card-desc"><span id="bookmarkCountText">0問</span>を集中復習</div>
+        <button class="set-select-item" id="btnSetWrong" data-set="wrong">
+          <div class="set-select-icon">🔁</div>
+          <div class="set-select-body">
+            <div class="set-select-title">苦手問題だけ</div>
+            <div class="set-select-desc">まだ正解していない問題のみ</div>
+          </div>
         </button>
-        <button class="mode-card" id="btnStartWrong">
-          <div class="mode-card-icon">🔁</div>
-          <div class="mode-card-title">苦手問題だけ</div>
-          <div class="mode-card-desc">まだ正解していない問題のみ</div>
-        </button>
-        <button class="mode-card" id="btnStartByRound">
-          <div class="mode-card-icon">📚</div>
-          <div class="mode-card-title">回ごとに選ぶ</div>
-          <div class="mode-card-desc">第1回〜第14回から選択</div>
+        <button class="set-select-item" id="btnSetByRound" data-set="round">
+          <div class="set-select-icon">📚</div>
+          <div class="set-select-body">
+            <div class="set-select-title">回ごとに選ぶ</div>
+            <div class="set-select-desc">第1回〜第14回から選択</div>
+          </div>
         </button>
       </div>
 
-      <div class="round-progress-section">
-        <h2 class="section-title">回ごとの進捗</h2>
-        <div id="roundProgressList" class="round-progress-list"></div>
-      </div>
+      <h2 class="section-heading">問題数を選んでください</h2>
+      <div class="count-grid" id="homeCountGrid"></div>
+
+      <button class="start-button" id="btnHomeStart" disabled>問題セットを選んでください</button>
+
+      <h2 class="section-heading">回ごとの進捗</h2>
+      <div id="roundProgressList" class="round-progress-list"></div>
 
       <div class="reset-row">
-        <button id="btnReset" class="btn-text-danger">学習データをすべてリセット</button>
+        <button id="btnReset" class="btn-text-danger">進捗をリセット</button>
       </div>
     </section>
 
@@ -148,6 +141,9 @@
           <button class="btn-secondary" id="btnBackHome">ホームへ戻る</button>
         </div>
       </div>
+
+      <h2 class="section-heading">解答一覧（タップで解説を表示）</h2>
+      <div id="resultReviewList" class="result-review-list"></div>
     </section>
 
   </main>
