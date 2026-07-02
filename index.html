@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>心理学クイズ道場｜看護学生のための復習アプリ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===== ヘッダー ===== -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <button id="btnHome" class="brand" aria-label="ホームに戻る">
+        <span class="brand-mark">🧠</span>
+        <span class="brand-text">心理学クイズ道場</span>
+      </button>
+      <div class="topbar-stats">
+        <div class="stat-chip">
+          <span class="stat-chip-label">正答率</span>
+          <span class="stat-chip-value" id="headerAccuracy">--%</span>
+        </div>
+        <div class="stat-chip">
+          <span class="stat-chip-label">解答済</span>
+          <span class="stat-chip-value" id="headerAnswered">0/85</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- ===== ホーム画面 ===== -->
+    <section id="screenHome" class="screen">
+      <div class="hero">
+        <h1 class="hero-title">今日も一問、積み上げよう。</h1>
+        <p class="hero-sub">全85問。ランダム出題で、実力をムラなく鍛える。</p>
+      </div>
+
+      <div class="progress-card">
+        <div class="progress-card-top">
+          <span>全体の進捗</span>
+          <span id="progressText">0 / 85 問</span>
+        </div>
+        <div class="progress-bar-track">
+          <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+        <div class="progress-summary">
+          <div class="summary-item">
+            <div class="summary-num" id="summaryCorrect">0</div>
+            <div class="summary-label">正解</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-num" id="summaryWrong">0</div>
+            <div class="summary-label">不正解</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-num" id="summaryBookmark">0</div>
+            <div class="summary-label">ブックマーク</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mode-grid">
+        <button class="mode-card mode-card-primary" id="btnStartAll">
+          <div class="mode-card-icon">🎲</div>
+          <div class="mode-card-title">ランダム出題</div>
+          <div class="mode-card-desc">全85問からシャッフルして出題</div>
+        </button>
+        <button class="mode-card" id="btnStartBookmark">
+          <div class="mode-card-icon">🔖</div>
+          <div class="mode-card-title">ブックマーク復習</div>
+          <div class="mode-card-desc"><span id="bookmarkCountText">0問</span>を集中復習</div>
+        </button>
+        <button class="mode-card" id="btnStartWrong">
+          <div class="mode-card-icon">🔁</div>
+          <div class="mode-card-title">苦手問題だけ</div>
+          <div class="mode-card-desc">まだ正解していない問題のみ</div>
+        </button>
+        <button class="mode-card" id="btnStartByRound">
+          <div class="mode-card-icon">📚</div>
+          <div class="mode-card-title">回ごとに選ぶ</div>
+          <div class="mode-card-desc">第1回〜第14回から選択</div>
+        </button>
+      </div>
+
+      <div class="round-progress-section">
+        <h2 class="section-title">回ごとの進捗</h2>
+        <div id="roundProgressList" class="round-progress-list"></div>
+      </div>
+
+      <div class="reset-row">
+        <button id="btnReset" class="btn-text-danger">学習データをすべてリセット</button>
+      </div>
+    </section>
+
+    <!-- ===== 回選択画面 ===== -->
+    <section id="screenRoundSelect" class="screen" hidden>
+      <div class="subheader">
+        <button class="btn-back" id="btnBackFromRoundSelect">← ホームへ</button>
+        <h2 class="subheader-title">出題する回を選ぶ</h2>
+      </div>
+      <div id="roundSelectList" class="round-select-list"></div>
+    </section>
+
+    <!-- ===== クイズ画面 ===== -->
+    <section id="screenQuiz" class="screen" hidden>
+      <div class="quiz-topline">
+        <button class="btn-back" id="btnQuitQuiz">← 中断してホームへ</button>
+        <div class="quiz-progress-text"><span id="quizIndex">1</span> / <span id="quizTotal">10</span></div>
+      </div>
+      <div class="quiz-progress-track">
+        <div class="quiz-progress-fill" id="quizProgressFill"></div>
+      </div>
+
+      <div class="quiz-card" id="quizCard">
+        <div class="quiz-card-meta">
+          <span class="round-badge" id="quizRoundBadge">第1回</span>
+          <button class="bookmark-btn" id="quizBookmarkBtn" aria-label="ブックマーク">
+            <svg class="bm-icon" viewBox="0 0 24 24"><path d="M6 3a2 2 0 0 0-2 2v16l8-5 8 5V5a2 2 0 0 0-2-2H6z"/></svg>
+          </button>
+        </div>
+        <p class="quiz-question" id="quizQuestion">問題文がここに表示されます</p>
+
+        <div class="choice-list" id="choiceList"></div>
+
+        <div class="feedback-panel" id="feedbackPanel" hidden>
+          <div class="feedback-badge" id="feedbackBadge">正解！</div>
+          <p class="feedback-explain" id="feedbackExplain"></p>
+          <button class="btn-next" id="btnNext">次の問題へ →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 結果画面 ===== -->
+    <section id="screenResult" class="screen" hidden>
+      <div class="result-card">
+        <div class="result-emoji" id="resultEmoji">🎉</div>
+        <h2 class="result-title" id="resultTitle">お疲れさま！</h2>
+        <div class="result-score" id="resultScore">8 / 10</div>
+        <p class="result-comment" id="resultComment">よくできました。</p>
+        <div class="result-buttons">
+          <button class="btn-primary" id="btnRetrySame">同じ範囲でもう一度</button>
+          <button class="btn-secondary" id="btnBackHome">ホームへ戻る</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <p>心理学講義 復習用クイズ｜全85問｜本番の小テストとは別の自主学習教材です</p>
+  </footer>
+
+</div>
+
+<script src="questions.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
